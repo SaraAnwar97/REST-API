@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const MONGODB_URI = 'mongodb+srv://Sara:Ss4923@@@cluster0.ldpfv.mongodb.net/Feed';
 const app = express();
 const feedRoutes = require('./routes/feed');
+const authRoutes = require('./routes/auth');
 const multer = require('multer');
 
 const fileStorage = multer.diskStorage({
@@ -36,11 +37,13 @@ res.setHeader('Access-Control-Allow-Headers','Content-Type,Authorization');
 next();
 });
 app.use('/feed',feedRoutes);
+app.use('/auth',authRoutes);
 app.use((error,req,res,next)=>{
   console.log(error);
   const status = error.statusCode || 500 ;
   const message = error.message; //by default
-  res.status(status).json({message:message});
+  const data = error.data;
+  res.status(status).json({message:message, data:data});
 })
 mongoose.connect(MONGODB_URI,{useNewUrlParser: true },{ useUnifiedTopology: true })
 .then(result => {
