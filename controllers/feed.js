@@ -123,6 +123,12 @@ exports.getPost = (req,res,next) =>{
              error.statusCode = 404;
              throw error;
          }
+         //if creator id == id of logged user (userId recieved from token)
+         if(post.creator.toString() !== req.userId){
+             const error = new Error('Not authorized')
+             error.statusCode = 403;
+             throw error;
+         }
          //if new extracted path is not the old path , so it's a new path(img)
          if(imageUrl !== post.imageUrl){
              clearImage(post.imageUrl); // pass old path as an argument
@@ -149,6 +155,11 @@ exports.deletePost = (req,res,next) =>{
         if(!post){
             const error = new Error('Could not find post');
             error.statusCode = 404;
+            throw error;
+        }
+        if(post.creator.toString() !== req.userId){
+            const error = new Error('Not authorized')
+            error.statusCode = 403;
             throw error;
         }
         //check logged in user
