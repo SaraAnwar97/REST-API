@@ -3,6 +3,7 @@ const Post = require('../models/post');
 const User = require('../models/user');
 const path = require('path');
 const fs = require('fs');
+const io = require('../socket');
 exports.getPosts = async (req,res,next)=>{
     const currentPage = req.query.page || 1;
     const perPage = 2;
@@ -52,6 +53,8 @@ try{
  const user = await User.findById(req.userId)
  user.posts.push(post); //push post mongoose object to user model
  await user.save();
+ //posts is the channel name
+ io.getIO().emit('posts',{ action: 'create', post: post});
  res.status(201).json({
  message:"post created",
  post:post,

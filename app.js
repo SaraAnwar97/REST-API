@@ -49,15 +49,11 @@ mongoose.connect(MONGODB_URI,{useNewUrlParser: true },{ useUnifiedTopology: true
 .then(result => {
   const server = app.listen(8080);
   //socket.io returns a function that takes server as an argument
-const io = require("./socket").init(server, {
-  cors: {
-     origin: "http://localhost:3000",
-     methods: ["GET", "POST"],
-  },
-});
-io.on("connection", (socket) => {
+const io = require("./socket").init(server);
+io.on("connection", socket => {
   console.log("client connected");
 });//event listener:wait for a new connection from client , fn executed for every new client
+console.log("Connected to DB!");
 })
 .catch(err => {
   console.log(err);
