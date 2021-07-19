@@ -47,7 +47,12 @@ app.use((error,req,res,next)=>{
 })
 mongoose.connect(MONGODB_URI,{useNewUrlParser: true },{ useUnifiedTopology: true })
 .then(result => {
-  app.listen(8080);
+  const server = app.listen(8080);
+  //socket.io returns a function that takes server as an argument
+  const io = require('socket.io')(server);
+  io.on('connection',socket =>{
+    console.log('client connected');
+  });//event listener:wait for a new connection from client , fn executed for every new client
 })
 .catch(err => {
   console.log(err);
